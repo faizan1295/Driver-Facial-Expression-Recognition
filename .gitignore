@@ -1,0 +1,7 @@
+dataset
+archive.zip
+*.h5
+*.pth
+model_Strategy_1_Full_Fine-Tuning.pth
+__pycache__/
+.ipynb_checkpoints/

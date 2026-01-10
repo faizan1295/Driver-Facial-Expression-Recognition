@@ -1,0 +1,13 @@
+{
+    "Strategy 1: Full Fine-Tuning": {
+        "test_metrics": {
+            "accuracy": 0.7174700473669546,
+            "precision": 0.7154978414966336,
+            "recall": 0.7174700473669546,
+            "f1_score": 0.7155668255753419
+        },
+        "trainable_params": 50522348,
+        "total_params": 50522348,
+        "avg_epoch_time": 1372.9029431760312
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "train_h5_path": "/Users/ar-syedfaizan.masood/Downloads/project_research/kmu_fed_train.h5",
+    "test_h5_path": "/Users/ar-syedfaizan.masood/Downloads/project_research/kmu_fed_test.h5",
+    "emotion_classes": [
+        "angry",
+        "disgust",
+        "fear",
+        "happy",
+        "neutral",
+        "sad",
+        "surprise"
+    ],
+    "emotion_to_label": {
+        "angry": 0,
+        "disgust": 1,
+        "fear": 2,
+        "happy": 3,
+        "neutral": 4,
+        "sad": 5,
+        "surprise": 6
+    },
+    "label_to_emotion": {
+        "0": "angry",
+        "1": "disgust",
+        "2": "fear",
+        "3": "happy",
+        "4": "neutral",
+        "5": "sad",
+        "6": "surprise"
+    },
+    "num_classes": 7,
+    "target_size": [
+        224,
+        224
+    ],
+    "train_total": 28709,
+    "test_total": 7178,
+    "total_images": 35887
+}
