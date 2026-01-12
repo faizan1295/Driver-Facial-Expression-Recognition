@@ -1,32 +1,147 @@
-# 🚗 Driver Facial Expression Recognition using GCViT
+# 🚗 DFER-GCViT: Driver Facial Expression Recognition
+
+> Efficient Fine-Tuning for Real-Time Automotive Applications using Global Context Vision Transformer
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.8.0-red.svg)](https://pytorch.org/)
+[![License](https://img.shields.io/badge/License-Research-green.svg)]()
 
-**Efficient Fine-Tuning Strategies for Real-Time Automotive Applications using Global Context Vision Transformer (GCViT)**
+**Author:** Syed Faizan Abbas Masood  
+**Institution:** BTU Cottbus-Senftenberg  
+**Department:** Graphical Systems
 
-## 📋 Overview
+---
 
-This research project investigates the effectiveness of partial fine-tuning strategies compared to full fine-tuning for driver facial expression recognition. The goal is to develop computationally efficient models suitable for real-time automotive safety applications while maintaining high classification accuracy.
+## 📋 Table of Contents
 
-### Research Question
+- [Overview](#-overview)
+- [Features](#-features)
+- [Requirements](#-requirements)
+- [Installation](#-installation)
+- [Dataset Setup](#-dataset-setup)
+- [Project Structure](#-project-structure)
+- [Running the Project](#-running-the-project)
+- [Model Architecture](#-model-architecture)
+- [Training Configuration](#-training-configuration)
+- [Results](#-results)
+- [Troubleshooting](#-troubleshooting)
 
-> *How does partial fine-tuning of the DFER-GCViT model compare to full fine-tuning in terms of classification performance and computational efficiency?*
+---
 
-## 🎯 Key Results
+## 🎯 Overview
 
-| Strategy | Accuracy | F1-Score | Trainable Params | Avg Epoch Time |
-|----------|----------|----------|------------------|----------------|
-| **Full Fine-Tuning** | **71.75%** | **0.7156** | 50.5M (100%) | ~1370s |
-| Last 2 Blocks | 67.67% | 0.6745 | 6.1M (12.1%) | ~520s |
+This project implements a Driver Facial Expression Recognition system using the DFER-GCViT (Global Context Vision Transformer) architecture. The research focuses on full fine-tuning classification performance for real-time automotive safety applications.
 
-### Key Findings
+**Key Research Focus:**
+- Full fine-tuning strategy using pre-trained GCViT model
+- Efficient training on Apple Silicon (M1/M2/M3) using Metal Performance Shaders (MPS)
+- Real-time driver emotion detection for automotive safety systems
+- KMU-FED dataset for driver expression classification
 
-- ✅ Full fine-tuning achieves **4% higher accuracy**
-- ✅ Partial fine-tuning is **2.6x faster** per epoch
-- ✅ Partial fine-tuning uses **88% fewer trainable parameters**
-- ✅ Both strategies effectively handle class imbalance
+**Expression Classes:**
+- Anger
+- Disgust
+- Fear
+- Happiness
+- Neutral
+- Sadness
+- Surprise
+
+---
+
+## ✨ Features
+
+- ✅ **Apple Silicon Optimized**: Native support for M1/M2/M3 chips using MPS
+- ✅ **Pre-trained Backbone**: Leverages GCViT pre-trained weights from ImageNet
+- ✅ **Advanced Augmentation**: Albumentations for robust data preprocessing
+- ✅ **Training Monitoring**: Real-time progress tracking with tqdm
+- ✅ **Comprehensive Metrics**: Accuracy, Precision, Recall, F1-Score, Confusion Matrix
+- ✅ **Visualization Suite**: Training curves, confusion matrices, class distribution
+- ✅ **Mixed Precision Training**: FP16 support for faster training
+- ✅ **Learning Rate Scheduling**: Cosine annealing with warm restarts
+
+---
+
+## 📦 Requirements
+
+### Hardware Requirements
+
+**Minimum:**
+- CPU: Intel Core i5 or Apple M1
+- RAM: 8GB
+- Storage: 5GB free space
+
+**Recommended:**
+- CPU: Apple M3 Pro or equivalent
+- RAM: 16GB+
+- GPU: Apple Silicon (MPS) or NVIDIA GPU with CUDA support
+- Storage: 10GB free space
+
+### Software Requirements
+
+- **Operating System**: macOS 12+, Linux, or Windows 10+
+- **Python**: 3.9 or higher
+- **Jupyter Notebook**: Latest version
+
+---
+
+## 🚀 Installation
+
+### Step 1: Clone or Download the Project
+
+```bash
+# Create project directory
+mkdir dfer-gcvit-project
+cd dfer-gcvit-project
+
+# Download the notebook file
+# Place DFER_GCViT_Mac.ipynb in this directory
+```
+
+### Step 2: Set Up Python Virtual Environment
+
+#### On macOS/Linux:
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+```
+
+#### On Windows:
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+venv\Scripts\activate
+```
+
+### Step 3: Install Dependencies
+
+The notebook will automatically install all required packages in the first cell. However, you can manually install them:
+
+```bash
+pip install --upgrade pip
+
+pip install numpy torch torchvision timm albumentations h5py opencv-python-headless tqdm pandas matplotlib seaborn scikit-learn jupyter
+```
+
+**Core Dependencies:**
+- `torch>=2.0.0` - PyTorch deep learning framework
+- `torchvision>=0.15.0` - Computer vision utilities
+- `timm>=0.9.0` - PyTorch Image Models (pre-trained GCViT)
+- `albumentations>=1.3.0` - Advanced image augmentation
+- `h5py>=3.8.0` - HDF5 file handling
+- `opencv-python-headless>=4.7.0` - Image processing
+- `tqdm>=4.65.0` - Progress bars
+- `pandas>=1.5.0` - Data manipulation
+- `matplotlib>=3.7.0` - Plotting
+- `seaborn>=0.12.0` - Statistical visualization
+- `scikit-learn>=1.2.0` - Machine learning metrics
+
+---
 
 ## 🏗️ Model Architecture
 
@@ -58,177 +173,429 @@ Input Image (224×224×3)
     7 Emotion Classes
 ```
 
-## 📊 Dataset
+## 📊 Dataset Setup
 
-**KMU-FED (Keimyung University Facial Expression Dataset)**
+### Step 1: Download KMU-FED Dataset
 
-| Split | Images | Description |
-|-------|--------|-------------|
-| Training | 28,709 | Used for model training |
-| Test | 7,178 | Used for evaluation |
-| **Total** | **35,887** | 7 emotion classes |
+The project uses the **KMU-FED (Kookmin University - Facial Expression in Driving)** dataset.
 
-### Emotion Classes
+**Option A: Using Kaggle**
+```bash
+# Install Kaggle API
+pip install kaggle
 
-| Class | Label | Training Samples |
-|-------|-------|------------------|
-| Angry | 0 | ~4,000 |
-| Disgust | 1 | ~500 (minority) |
-| Fear | 2 | ~4,100 |
-| Happy | 3 | ~7,200 |
-| Neutral | 4 | ~5,000 |
-| Sad | 5 | ~4,800 |
-| Surprise | 6 | ~3,100 |
+# Configure Kaggle credentials (place kaggle.json in ~/.kaggle/)
+# Download dataset
+kaggle datasets download -d your-dataset-path
+```
 
-## 🛠️ Installation
+**Option B: Manual Download**
+- Download the dataset from the official source
+- The dataset should be in `.zip` format named `archive.zip`
 
-### Prerequisites
-
-- Python 3.9+
-- Apple Silicon Mac (MPS) or NVIDIA GPU (CUDA)
-
-### Setup
+### Step 2: Place Dataset File
 
 ```bash
-# Clone the repository
-git clone https://github.com/faizan1295/Driver-Facial-Expression-Recognition.git
-cd Driver-Facial-Expression-Recognition
+# Create data directory
+mkdir -p ~/Downloads/data-exploration
 
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install torch torchvision timm albumentations h5py opencv-python-headless tqdm pandas matplotlib seaborn scikit-learn
+# Place archive.zip in this directory
+# ~/Downloads/data-exploration/archive.zip
 ```
 
-## 🚀 Usage
-
-### Training
-
-Open the Jupyter notebook and run all cells:
-
-```bash
-jupyter notebook DFER_GCViT_Mac.ipynb
+**Expected Dataset Structure (after extraction):**
+```
+archive/
+├── KMU-FED/
+│   ├── train/
+│   │   ├── anger/
+│   │   ├── disgust/
+│   │   ├── fear/
+│   │   ├── happiness/
+│   │   ├── neutral/
+│   │   ├── sadness/
+│   │   └── surprise/
+│   └── validation/
+│       ├── anger/
+│       ├── disgust/
+│       ├── fear/
+│       ├── happiness/
+│       ├── neutral/
+│       ├── sadness/
+│       └── surprise/
 ```
 
-### Configuration
+### Step 3: Update Working Directory (Important!)
 
-Modify training parameters in the notebook:
+In the notebook, update the `WORKING_DIR` variable in **Section 2** to match your setup:
 
 ```python
-TRAINING_CONFIG = {
-    'epochs': 60,
-    'learning_rate': 0.0001,
-    'weight_decay': 1e-4,
-    'patience': 30,
-    'min_delta': 0.001
-}
+# Change this line to your actual path
+WORKING_DIR = '/path/to/your/data-exploration'  # Update this!
+os.chdir(WORKING_DIR)
 ```
 
-### Fine-Tuning Strategies
-
-```python
-# Strategy 1: Full Fine-Tuning
-model = DFER_GCViT(pretrained=True)
-# All parameters trainable
-
-# Strategy 2: Partial Fine-Tuning (Last 2 Blocks)
-model = DFER_GCViT(pretrained=True)
-model.freeze_all_except_last_n_blocks(n_blocks=2)
-```
+---
 
 ## 📁 Project Structure
 
 ```
-Driver-Facial-Expression-Recognition/
-├── DFER_GCViT_Mac.ipynb        # Main notebook
-├── README.md                    # This file
-├── Project_Report.md            # Detailed research report
-├── training_results.json        # Saved metrics
-├── kmu_fed_config.json          # Dataset configuration
-├── comparison_results.png       # Performance comparison chart
-├── loss_curves.png              # Training/validation loss curves
-├── confusion_matrices.png       # Per-class performance
-└── .gitignore                   # Git ignore rules
+dfer-gcvit-project/
+├── DFER_GCViT_Mac.ipynb          # Main notebook
+├── README.md                      # This file
+├── venv/                          # Virtual environment
+└── data-exploration/              # Working directory
+    ├── archive.zip                # Original dataset
+    ├── archive/                   # Extracted dataset
+    │   └── KMU-FED/
+    ├── train_annotations.csv      # Training metadata
+    ├── val_annotations.csv        # Validation metadata
+    ├── train_data.h5              # Preprocessed training data
+    ├── val_data.h5                # Preprocessed validation data
+    ├── best_model.pth             # Best trained model
+    ├── confusion_matrix.png       # Confusion matrix visualization
+    ├── performance_summary.png    # Performance charts
+    └── final_results.json         # Training results
 ```
-
-## 📈 Training Visualizations
-
-### Loss Curves
-
-The training demonstrates effective learning with early stopping preventing overfitting:
-
-- **Full Fine-Tuning**: Converged at epoch 40
-- **Partial Fine-Tuning**: Converged at epoch 41
-
-### Performance Comparison
-
-| Metric | Full Fine-Tuning | Partial (Last 2 Blocks) | Difference |
-|--------|------------------|-------------------------|------------|
-| Accuracy | 71.75% | 67.67% | +4.08% |
-| Precision | 71.55% | 67.41% | +4.14% |
-| Recall | 71.75% | 67.67% | +4.08% |
-| F1-Score | 71.56% | 67.45% | +4.11% |
-| Training Time | ~15.2 hrs | ~5.9 hrs | 2.6x faster |
-
-## 🔧 Technical Details
-
-### Hardware
-
-- **Device**: MacBook Pro with Apple M3 Pro
-- **Acceleration**: Metal Performance Shaders (MPS)
-- **Memory**: Optimized batch size (16) for MPS compatibility
-
-### Software Stack
-
-| Library | Version | Purpose |
-|---------|---------|---------|
-| PyTorch | 2.8.0 | Deep learning framework |
-| timm | 1.0.22 | Pre-trained GCViT model |
-| Albumentations | Latest | Data augmentation |
-| scikit-learn | Latest | Metrics calculation |
-
-### Data Augmentation
-
-```python
-train_transform = A.Compose([
-    A.HorizontalFlip(p=0.5),
-    A.Rotate(limit=15, p=0.5),
-    A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=15, p=0.5),
-    A.Perspective(scale=(0.05, 0.1), p=0.3),
-    A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
-    A.GaussianBlur(blur_limit=(3, 5), p=0.3),
-    A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ToTensorV2()
-])
-```
-
-## 📚 References
-
-1. Hatamizadeh, A., et al. (2023). "Global Context Vision Transformers." ICML 2023.
-2. Goodfellow, I. J., et al. (2013). "Challenges in representation learning: FER2013."
-3. Dosovitskiy, A., et al. (2021). "An Image is Worth 16x16 Words: ViT." ICLR 2021.
-4. Liu, Z., et al. (2021). "Swin Transformer." ICCV 2021.
-5. Mollahosseini, A., et al. (2017). "AffectNet: FER in the Wild." IEEE TAC.
-
-## 👤 Author
-
-**Syed Faizan Abbas Masood**  
-Masters of Artificial Intelligence
-BTU Cottbus-Senftenberg  
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- BTU Cottbus-Senftenberg for research support
-- Keimyung University for the KMU-FED dataset
-- timm library maintainers for pre-trained models
-- PyTorch team for the deep learning framework
 
 ---
 
-*For questions or collaborations, please open an issue or contact the author.*
+## 🏃 Running the Project
+
+### Option 1: Using Jupyter Notebook (Recommended)
+
+1. **Launch Jupyter Notebook:**
+   ```bash
+   # Make sure virtual environment is activated
+   jupyter notebook
+   ```
+
+2. **Open the notebook:**
+   - Navigate to `DFER_GCViT_Mac.ipynb`
+   - Click to open
+
+3. **Execute cells sequentially:**
+   - **Cell 1-3**: Setup & Installation - Installs dependencies and checks GPU availability
+   - **Cell 4**: Data Upload - Checks for dataset file
+   - **Cell 5**: Data Extraction - Extracts dataset from zip
+   - **Cell 6**: Data Exploration - Analyzes class distribution
+   - **Cell 7**: Data Preprocessing - Creates HDF5 files for efficient loading
+   - **Cell 8-9**: Model Architecture - Defines GCViT model with custom classification head
+   - **Cell 10**: Training Configuration - Sets hyperparameters and strategy
+   - **Cell 11**: Model Training - Trains for 50 epochs with full fine-tuning
+   - **Cell 12**: Model Evaluation - Tests on validation set
+   - **Cell 13-14**: Visualization - Generates confusion matrix and performance charts
+   - **Cell 15**: Save Results - Exports final metrics to JSON
+
+4. **Monitor Training:**
+   - Watch the progress bars for epoch completion
+   - Check training/validation loss and accuracy
+   - Training will automatically save the best model
+
+### Option 2: Using JupyterLab
+
+```bash
+# Install JupyterLab if not already installed
+pip install jupyterlab
+
+# Launch JupyterLab
+jupyter lab
+
+# Open DFER_GCViT_Mac.ipynb
+```
+
+### Option 3: Using VS Code
+
+1. Install Python extension in VS Code
+2. Open the notebook file
+3. Select your Python interpreter (from venv)
+4. Run cells using Shift+Enter
+
+---
+
+## 🧠 Model Architecture
+
+### GCViT (Global Context Vision Transformer)
+
+The model uses a hierarchical vision transformer architecture with global context modeling:
+
+**Architecture Components:**
+- **Backbone**: GCViT-xxtiny pre-trained on ImageNet-1K
+- **Input Resolution**: 224×224 pixels
+- **Feature Extraction**: 4 stages with increasing channels (64→128→256→512)
+- **Global Context**: Self-attention with window-based and global tokens
+- **Classification Head**: Custom fully connected layer (512→7 classes)
+
+**Model Statistics:**
+- Total Parameters: ~50.5M
+- Trainable Parameters: ~50.5M (Full fine-tuning)
+- Input Channels: 3 (RGB)
+- Output Classes: 7 (Facial expressions)
+
+**Key Features:**
+- Hierarchical feature extraction
+- Local-global context modeling
+- Efficient attention mechanisms
+- Pre-trained weights from ImageNet
+
+---
+
+## ⚙️ Training Configuration
+
+### Hyperparameters
+
+```python
+BATCH_SIZE = 32              # Training batch size
+LEARNING_RATE = 1e-4         # Initial learning rate
+WEIGHT_DECAY = 1e-4          # L2 regularization
+NUM_EPOCHS = 50              # Total training epochs
+NUM_WORKERS = 4              # DataLoader workers
+GRADIENT_CLIP = 1.0          # Gradient clipping threshold
+```
+
+### Data Augmentation
+
+**Training Augmentation:**
+- Random horizontal flip (p=0.5)
+- Random brightness/contrast adjustment (p=0.3)
+- Random rotation (±15 degrees, p=0.3)
+- Gaussian blur (p=0.2)
+- Normalization (ImageNet statistics)
+
+**Validation Augmentation:**
+- Resize to 224×224
+- Normalization only
+
+### Optimization Strategy
+
+- **Optimizer**: AdamW with weight decay
+- **Loss Function**: CrossEntropyLoss
+- **LR Scheduler**: CosineAnnealingLR (T_max=50)
+- **Early Stopping**: Best model saved based on validation accuracy
+- **Mixed Precision**: Optional FP16 training
+
+### Fine-Tuning Strategy
+
+**Full Fine-Tuning (Current Implementation):**
+- All model parameters are trainable
+- Updates both backbone and classification head
+- Higher computational cost but best performance
+- Suitable when sufficient data is available
+
+---
+
+## 📈 Results
+
+### Expected Performance Metrics
+
+Based on the full fine-tuning strategy:
+
+```
+Test Accuracy:  ~71-72%
+Test F1-Score:  ~71-72%
+Total Params:   50,522,348
+Training Time:  ~23 minutes/epoch (M3 Pro)
+```
+
+### Output Files
+
+After training completes, you'll find:
+
+1. **best_model.pth** - Trained model weights
+2. **confusion_matrix.png** - Class-wise prediction analysis
+3. **performance_summary.png** - Metrics visualization
+4. **final_results.json** - Detailed metrics and statistics
+5. **training_curve.png** - Loss and accuracy plots
+
+### Interpreting Results
+
+**Confusion Matrix:**
+- Diagonal elements show correct predictions
+- Off-diagonal elements show misclassifications
+- Useful for identifying which classes are confused
+
+**Performance Metrics:**
+- **Accuracy**: Overall correctness
+- **Precision**: Reliability of positive predictions
+- **Recall**: Ability to find all positives
+- **F1-Score**: Harmonic mean of precision and recall
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### 1. ModuleNotFoundError: No module named 'torch'
+
+**Problem:** Dependencies not installed
+
+**Solution:**
+```bash
+pip install torch torchvision timm albumentations h5py opencv-python-headless tqdm pandas matplotlib seaborn scikit-learn
+```
+
+#### 2. MPS device not available
+
+**Problem:** Apple Silicon GPU not detected
+
+**Solution:**
+- Ensure you're using macOS 12.3+
+- Update PyTorch: `pip install --upgrade torch torchvision`
+- Check MPS availability: `python -c "import torch; print(torch.backends.mps.is_available())"`
+
+#### 3. FileNotFoundError: archive.zip not found
+
+**Problem:** Dataset not in correct location
+
+**Solution:**
+- Verify `archive.zip` is in the `WORKING_DIR` path
+- Update the `WORKING_DIR` variable in Cell 4
+- Ensure path uses forward slashes, even on Windows
+
+#### 4. CUDA out of memory (if using NVIDIA GPU)
+
+**Problem:** Batch size too large for GPU memory
+
+**Solution:**
+- Reduce `BATCH_SIZE` to 16 or 8
+- Enable gradient checkpointing
+- Use mixed precision training
+
+#### 5. Training is very slow
+
+**Problem:** Not using GPU acceleration
+
+**Solution:**
+- Check device in Cell 3: Should show "mps" (Mac) or "cuda" (NVIDIA)
+- Install correct PyTorch version for your hardware
+- Reduce `NUM_WORKERS` if CPU is bottleneck
+
+#### 6. High memory usage during preprocessing
+
+**Problem:** All images loaded into memory at once
+
+**Solution:**
+- Close other applications
+- Restart kernel: `Kernel → Restart Kernel`
+- Use smaller subset for testing
+
+#### 7. Import error for albumentations
+
+**Problem:** Albumentations version incompatibility
+
+**Solution:**
+```bash
+pip install --upgrade albumentations opencv-python-headless
+```
+
+#### 8. Kernel dies during training
+
+**Problem:** Insufficient memory
+
+**Solution:**
+- Reduce batch size to 16
+- Close browser tabs and other applications
+- Monitor memory usage: `htop` (Linux/Mac) or Task Manager (Windows)
+
+---
+
+## 🎯 Next Steps
+
+### After Successful Training
+
+1. **Analyze Results:**
+   - Review confusion matrix for class-specific performance
+   - Check which expressions are most confused
+   - Analyze per-class precision and recall
+
+2. **Model Deployment:**
+   - Export model to ONNX format for production
+   - Optimize for inference (TorchScript, quantization)
+   - Test on real-world driving scenarios
+
+3. **Further Experiments:**
+   - Try partial fine-tuning (freeze backbone layers)
+   - Experiment with different learning rates
+   - Test data augmentation strategies
+   - Collect more diverse training data
+
+4. **Research Extensions:**
+   - Multi-task learning (expression + engagement level)
+   - Temporal modeling for video sequences
+   - Real-time inference optimization
+   - Cross-dataset generalization testing
+
+---
+
+## 📚 Additional Resources
+
+### Documentation
+- [PyTorch Documentation](https://pytorch.org/docs/)
+- [timm Library](https://github.com/huggingface/pytorch-image-models)
+- [Albumentations](https://albumentations.ai/docs/)
+- [GCViT Paper](https://arxiv.org/abs/2206.09959)
+
+### Related Work
+- Vision Transformers (ViT)
+- Facial Expression Recognition in the Wild
+- Driver Monitoring Systems
+- Transfer Learning for Computer Vision
+
+---
+
+## 📝 Citation
+
+If you use this code for your research, please cite:
+
+```bibtex
+@misc{masood2025dfergcvit,
+  author = {Masood, Syed Faizan Abbas},
+  title = {DFER-GCViT: Driver Facial Expression Recognition using Global Context Vision Transformer},
+  year = {2025},
+  institution = {BTU Cottbus-Senftenberg},
+  department = {Department of Graphical Systems}
+}
+```
+
+---
+
+## 🤝 Support
+
+For questions or issues:
+
+1. Check the [Troubleshooting](#-troubleshooting) section
+2. Review error messages carefully
+3. Contact: Syed Faizan Abbas Masood
+4. Institution: BTU Cottbus-Senftenberg
+
+---
+
+## 📄 License
+
+This project is for academic research purposes.
+
+---
+
+## ✅ Quick Start Checklist
+
+Before running the project, ensure you have:
+
+- [ ] Python 3.9+ installed
+- [ ] Virtual environment created and activated
+- [ ] All dependencies installed
+- [ ] KMU-FED dataset downloaded (`archive.zip`)
+- [ ] Dataset placed in correct directory
+- [ ] `WORKING_DIR` updated in notebook
+- [ ] Jupyter Notebook installed and launched
+- [ ] GPU (MPS/CUDA) detected (optional but recommended)
+
+---
+
+**Ready to start? Launch Jupyter Notebook and open `DFER_GCViT_Mac.ipynb`! 🚀**
+
+---
+
+*Last Updated: January 2025*  
+*Author: Syed Faizan Abbas Masood*  
+*Institution: BTU Cottbus-Senftenberg*
